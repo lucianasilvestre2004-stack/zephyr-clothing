@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { products, type Product } from "@/content/products";
 import { ExternalIcon } from "./ui/ButtonLink";
 import { Photo } from "./ui/Photo";
@@ -9,7 +9,9 @@ const byId = (id: string) => products.find((p) => p.id === id);
 
 export function GetTheFit() {
   const [selectedId, setSelectedId] = useState(products[0].id);
+  const [openId, setOpenId] = useState<string | null>(null);
   const selected = byId(selectedId) ?? products[0];
+  const opened = openId ? byId(openId) : undefined;
 
   return (
     <section id="get-the-fit" aria-labelledby="fit-title" className="bg-white py-20 sm:py-28 lg:py-36">
@@ -21,7 +23,7 @@ export function GetTheFit() {
           </h2>
           <div className="col-span-12 lg:col-span-4 lg:pb-3">
             <p className="max-w-[40ch] text-lg leading-relaxed">
-              Elegí una prenda, mirala en grande y armá el outfit con las que combinan.
+              Elegí una prenda, mirala en detalle y armá el outfit con las que combinan.
             </p>
             <DemoNote className="mt-4" />
           </div>
@@ -35,7 +37,7 @@ export function GetTheFit() {
           >
             {products.map((p) => (
               <li key={p.id} className="relative w-[78%] shrink-0 snap-start sm:w-[44%]">
-                <ProductCard product={p} />
+                <ProductCard product={p} onOpen={() => setOpenId(p.id)} />
               </li>
             ))}
           </ul>
@@ -47,22 +49,30 @@ export function GetTheFit() {
         {/* Desktop: selector editorial */}
         <div className="mt-16 hidden grid-cols-12 gap-x-10 lg:grid">
           <div className="col-span-7">
-            <div className="relative aspect-[4/5] overflow-hidden bg-paper">
+            <button
+              type="button"
+              onClick={() => setOpenId(selected.id)}
+              className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-paper"
+            >
+              <span className="sr-only">Ver detalle de {selected.name}</span>
               {products.map((p) => (
-                <div
+                <span
                   key={p.id}
-                  aria-hidden={p.id !== selected.id}
+                  aria-hidden="true"
                   className={`absolute inset-0 transition-[opacity,transform] duration-500 ease-out ${
                     p.id === selected.id ? "scale-100 opacity-100" : "scale-[1.03] opacity-0"
                   }`}
                 >
-                  <Photo photo={p.image} sizes="(min-width:1024px) 55vw, 100vw" />
-                </div>
+                  <Photo photo={{ ...p.image, alt: "" }} sizes="(min-width:1024px) 55vw, 100vw" />
+                </span>
               ))}
-              <span className="absolute left-4 top-4 bg-white px-2.5 py-1 text-xs font-bold">
-                Prenda de demostración
+              <span
+                aria-hidden="true"
+                className="absolute bottom-4 left-4 bg-white px-3 py-1.5 text-sm font-bold opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                Ver prenda
               </span>
-            </div>
+            </button>
           </div>
 
           <div className="col-span-5 flex flex-col">
@@ -126,48 +136,160 @@ export function GetTheFit() {
                 })}
               </div>
 
-              <a
-                href={selected.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex min-h-12 items-center gap-2.5 bg-ink px-6 font-bold text-white transition-colors hover:bg-bordo"
-              >
-                Ver en la tienda oficial
-                <ExternalIcon />
-                <span className="sr-only">(se abre en una pestaña nueva)</span>
-              </a>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setOpenId(selected.id)}
+                  className="inline-flex min-h-12 items-center border-2 border-ink px-6 font-bold transition-colors hover:bg-ink hover:text-white"
+                >
+                  Ver prenda
+                </button>
+                <BuyLink product={selected} />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <ProductDialog
+        product={opened}
+        onClose={() => setOpenId(null)}
+        onSelect={(id) => {
+          setOpenId(id);
+          setSelectedId(id);
+        }}
+      />
     </section>
   );
 }
 
-function ProductCard({ product: p }: { product: Product }) {
+/** Botón de compra: abre la página real de la prenda para elegir talle y pagar. */
+function BuyLink({ product, className = "" }: { product: Product; className?: string }) {
+  return (
+    <a
+      href={product.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex min-h-12 items-center justify-center gap-2.5 bg-ink px-6 font-bold text-white transition-colors hover:bg-bordo ${className}`}
+    >
+      Comprar
+      <ExternalIcon />
+      <span className="sr-only">{product.name} (se abre en una pestaña nueva)</span>
+    </a>
+  );
+}
+
+function ProductCard({ product: p, onOpen }: { product: Product; onOpen: () => void }) {
   const pairs = p.pairsWith.map((id) => byId(id)?.name).filter(Boolean);
   return (
     <article className="flex h-full flex-col">
-      <div className="relative aspect-[4/5] overflow-hidden bg-paper">
-        <Photo photo={p.image} sizes="(min-width:640px) 44vw, 78vw" />
-        <span className="absolute left-3 top-3 bg-white px-2 py-0.5 text-[0.7rem] font-bold">Demo</span>
-      </div>
-      <p className="mt-4 text-sm font-semibold text-steel">{p.category}</p>
-      <h3 className="type-display mt-1 text-[2.4rem]">{p.name}</h3>
+      <button type="button" onClick={onOpen} className="text-left">
+        <span className="relative block aspect-[4/5] overflow-hidden bg-paper">
+          <Photo photo={p.image} sizes="(min-width:640px) 44vw, 78vw" />
+        </span>
+        <span className="mt-4 block text-sm font-semibold text-steel">{p.category}</span>
+        <span className="type-display mt-1 block text-[2.4rem]">{p.name}</span>
+        <span className="sr-only">Ver detalle</span>
+      </button>
       <p className="mt-2 text-[0.95rem] leading-relaxed">{p.note}</p>
       <p className="mt-2 text-sm text-steel">Armalo con: {pairs.join(" y ")}</p>
       <div className="grow" />
-      <a
-        href={p.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-5 inline-flex min-h-12 items-center justify-center gap-2.5 border-2 border-ink px-5 font-bold transition-colors hover:bg-ink hover:text-white"
-      >
-        Ver en la tienda
-        <ExternalIcon />
-        <span className="sr-only">(se abre en una pestaña nueva)</span>
-      </a>
+      <div className="mt-5 grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="inline-flex min-h-12 items-center justify-center border-2 border-ink px-3 font-bold"
+        >
+          Ver prenda
+        </button>
+        <BuyLink product={p} className="px-3" />
+      </div>
     </article>
+  );
+}
+
+/** Vista de producto dentro de la página (diálogo nativo: foco atrapado y Escape para cerrar). */
+function ProductDialog({
+  product,
+  onClose,
+  onSelect,
+}: {
+  product: Product | undefined;
+  onClose: () => void;
+  onSelect: (id: string) => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    if (product && !dialog.open) {
+      dialog.showModal();
+      document.body.style.overflow = "hidden";
+    }
+    if (!product && dialog.open) dialog.close();
+    if (!product) document.body.style.overflow = "";
+  }, [product]);
+
+  return (
+    <dialog
+      ref={ref}
+      onClose={onClose}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      aria-labelledby="producto-titulo"
+      className="m-auto max-h-[92svh] w-[min(64rem,calc(100%-1.5rem))] overflow-y-auto bg-white p-0 text-ink backdrop:bg-ink/70"
+    >
+      {product && (
+        <div className="grid md:grid-cols-2">
+          <div className="relative aspect-[4/3] bg-paper md:aspect-auto md:min-h-[36rem]">
+            <Photo photo={product.image} sizes="(min-width:768px) 32rem, 100vw" priority />
+          </div>
+
+          <div className="flex flex-col p-6 sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <p className="text-sm font-semibold text-steel">{product.category}</p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="-mr-2 -mt-2 inline-flex min-h-11 items-center px-3 text-sm font-bold underline underline-offset-4"
+              >
+                Cerrar
+              </button>
+            </div>
+            <h3 id="producto-titulo" className="type-display mt-2 text-[clamp(2.6rem,6vw,4rem)]">
+              {product.name}
+            </h3>
+            <p className="mt-4 max-w-[42ch] text-lg leading-relaxed">{product.note}</p>
+
+            <p className="mt-8 text-sm font-semibold">Combina con</p>
+            <ul className="mt-3 grid grid-cols-2 gap-3">
+              {product.pairsWith.map((id) => {
+                const pair = byId(id);
+                if (!pair) return null;
+                return (
+                  <li key={id}>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(id)}
+                      className="group flex w-full items-center gap-3 border border-ink/15 p-2 text-left transition-colors hover:border-ink"
+                    >
+                      <span className="relative aspect-[4/5] w-12 shrink-0 overflow-hidden bg-paper">
+                        <Photo photo={{ ...pair.image, alt: "" }} sizes="48px" />
+                      </span>
+                      <span className="text-sm font-semibold leading-snug">{pair.name}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="grow" />
+            <BuyLink product={product} className="mt-10 w-full" />
+            <p className="mt-3 text-sm text-steel">Elegís talle y color y pagás en la tienda online de Zephyr.</p>
+          </div>
+        </div>
+      )}
+    </dialog>
   );
 }
 
@@ -175,7 +297,7 @@ function DemoNote({ className = "" }: { className?: string }) {
   return (
     <p className={`flex gap-2.5 text-sm leading-snug text-steel ${className}`}>
       <span aria-hidden="true" className="mt-1.5 size-2 shrink-0 bg-bordo" />
-      Prendas y fotos de demostración. Modelos, talles y precios reales en la tienda oficial.
+      Fotos de demostración. Talles, colores y precios se eligen al comprar.
     </p>
   );
 }

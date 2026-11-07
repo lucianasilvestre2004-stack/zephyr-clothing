@@ -21,7 +21,7 @@ export function Hero() {
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="#get-the-fit">Elegí tu fit</ButtonLink>
               <ButtonLink href={STORE_URL} external variant="outline">
-                Ir a la tienda
+                Comprar online
               </ButtonLink>
             </div>
           </div>

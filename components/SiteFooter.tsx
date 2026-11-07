@@ -32,7 +32,7 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className="inline-flex min-h-10 items-center gap-2 font-semibold hover:text-concrete"
             >
-              Tienda oficial
+              Tienda online
               <ExternalIcon className="size-3" />
               <span className="sr-only">(se abre en una pestaña nueva)</span>
             </a>

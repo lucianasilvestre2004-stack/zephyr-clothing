@@ -112,7 +112,7 @@ export function SiteHeader() {
             rel="noopener noreferrer"
             className="hidden min-h-11 items-center gap-2 bg-ink px-5 text-sm font-bold text-white transition-colors hover:bg-bordo sm:inline-flex"
           >
-            Tienda
+            Comprar
             <ExternalIcon className="size-3" />
             <span className="sr-only">(se abre en una pestaña nueva)</span>
           </a>
@@ -171,7 +171,7 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-white px-6 font-bold text-ink"
             >
-              Ir a la tienda oficial
+              Comprar online
               <ExternalIcon />
               <span className="sr-only">(se abre en una pestaña nueva)</span>
             </a>

@@ -24,7 +24,7 @@ export function NewDrops() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink href={STORE_URL} external variant="outline-light">
-                Ver novedades en la tienda
+                Comprar las novedades
               </ButtonLink>
               <ButtonLink href={INSTAGRAM_URL} external variant="outline-light">
                 Más looks en Instagram

@@ -18,12 +18,12 @@ export function Closing() {
         </h2>
         <div className="mt-10 grid grid-cols-12 gap-x-8 gap-y-8 lg:mt-14">
           <p className="col-span-12 max-w-[42ch] text-lg leading-relaxed text-white/90 lg:col-span-5">
-            En la tienda oficial están todos los modelos, talles y precios actualizados. Para consultas sobre
-            talles, envíos o cambios, escribile a Zephyr por Instagram: {INSTAGRAM_HANDLE}.
+            Todos los modelos, talles y precios están en la tienda online. Para consultas sobre talles, envíos o
+            cambios, escribinos por Instagram: {INSTAGRAM_HANDLE}.
           </p>
           <div className="col-span-12 flex flex-wrap items-start gap-3 lg:col-span-6 lg:col-start-7 lg:justify-end">
             <ButtonLink href={STORE_URL} external variant="light">
-              Ir a la tienda oficial
+              Comprar online
             </ButtonLink>
             <ButtonLink href={INSTAGRAM_URL} external variant="outline-light">
               Escribinos por Instagram
