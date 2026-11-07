@@ -56,7 +56,7 @@ export function SiteFooter() {
             Rediseño académico no oficial de Zephyr Clothing. Las fotos y prendas son provisionales, con fines de
             demostración; no son productos ni campañas de la marca.
           </p>
-          <p>Diseño y desarrollo: Gonzalo Manresa</p>
+          <p>Diseño y desarrollo: Luciana Silvestre</p>
         </div>
       </div>
     </footer>
