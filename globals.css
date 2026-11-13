@@ -72,6 +72,42 @@
   animation: promo-scroll 40s linear infinite;
 }
 
+/* Juego Zonda: ráfagas de viento de fondo y el "+1" que sube y se desvanece. */
+.zonda-wind {
+  background-image: repeating-linear-gradient(
+    100deg,
+    transparent 0 60px,
+    rgba(255, 255, 255, 0.35) 60px 62px,
+    transparent 62px 160px
+  );
+  background-size: 400px 100%;
+  animation: zonda-gust 1.6s linear infinite;
+}
+
+@keyframes zonda-gust {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 400px 0;
+  }
+}
+
+.zonda-pop {
+  animation: zonda-pop 0.8s ease-out forwards;
+}
+
+@keyframes zonda-pop {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48px);
+  }
+}
+
 /* Con movimiento reducido, la barra queda fija y centrada. */
 @media (prefers-reduced-motion: reduce) {
   .promo-track {

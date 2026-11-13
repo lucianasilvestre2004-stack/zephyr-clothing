@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { products, type Product } from "@/content/products";
 import { Photo } from "./ui/Photo";
+import { useZondaCode, withDiscount } from "@/lib/zonda";
 
 const byId = (id: string) => products.find((p) => p.id === id);
 
@@ -12,6 +13,21 @@ const formatPrice = (n: number) => `$ ${n.toLocaleString("es-AR")}`;
 const featured = ["puffer-bordo", "jean-wide", "pollera-cargo", "mini-negra"]
   .map(byId)
   .filter((p): p is Product => Boolean(p));
+
+/** Precio con el 10% del juego Zonda tachando el original cuando está activo. */
+function Price({ price, big = false }: { price: number; big?: boolean }) {
+  const code = useZondaCode();
+  if (!code) return <>{formatPrice(price)}</>;
+  return (
+    <>
+      <s className={`mr-2 text-gray-text/70 ${big ? "text-lg" : ""}`}>{formatPrice(price)}</s>
+      <span className="font-semibold text-bordo">{formatPrice(withDiscount(price))}</span>
+      <span className="ml-2 inline-block rounded-full bg-bordo px-2 py-0.5 align-middle text-[0.65rem] font-semibold uppercase text-white">
+        -10% Zonda
+      </span>
+    </>
+  );
+}
 
 export function GetTheFit() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -36,7 +52,11 @@ export function GetTheFit() {
                   />
                 </span>
                 <span className="mt-4 block text-sm uppercase leading-snug text-ink sm:text-base">{p.name}</span>
-                {p.price && <span className="mt-1 block text-sm sm:text-base">{formatPrice(p.price)}</span>}
+                {p.price && (
+                  <span className="mt-1 block text-sm sm:text-base">
+                    <Price price={p.price} />
+                  </span>
+                )}
                 <span className="mt-2 block text-sm font-medium text-bordo underline-offset-4 group-hover:underline">
                   Ver prenda
                 </span>
@@ -126,7 +146,7 @@ function ProductDetail({
             </h3>
             {product.price && (
               <p className="mt-2 text-2xl text-ink">
-                {formatPrice(product.price)}
+                <Price price={product.price} big />
                 <span className="ml-2 align-middle text-xs text-gray-text">precio de referencia</span>
               </p>
             )}

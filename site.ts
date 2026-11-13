@@ -15,6 +15,7 @@ export const PROMO_TEXT = "20% OFF transferencia – 3 y 6 cuotas sin interés �
 export const navItems = [
   { href: "#get-the-fit", label: "Get the fit" },
   { href: "#new-drops", label: "New drops" },
+  { href: "#zonda", label: "Juego Zonda" },
   { href: "#envios-y-cambios", label: "Envíos y cambios" },
   { href: "#beneficios", label: "Beneficios" },
   { href: "#contacto", label: "Contacto" },
