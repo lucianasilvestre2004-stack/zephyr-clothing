@@ -1,63 +1,74 @@
-import { INSTAGRAM_HANDLE, INSTAGRAM_URL, navItems, STORE_URL } from "@/content/site";
-import { ExternalIcon } from "./ui/ButtonLink";
+import { ADDRESS, EMAIL, INSTAGRAM_URL, navItems, STORE_URL, WHATSAPP_NUMBER, WHATSAPP_URL } from "@/content/site";
+
+const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
 export function SiteFooter() {
   return (
-    <footer className="on-dark bg-ink text-white">
-      <div className="mx-auto max-w-[1600px] px-5 pb-10 pt-16 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-12 gap-x-8 gap-y-10">
-          <div className="col-span-12 lg:col-span-5">
-            <a href="#inicio" className="type-display text-[clamp(4rem,12vw,8rem)] leading-none">
-              Zephyr
-            </a>
-            <p className="mt-4 max-w-[34ch] text-concrete">Ropa urbana de mujer desde Mendoza, Argentina.</p>
-          </div>
-
-          <nav aria-label="Pie de página" className="col-span-6 sm:col-span-4 lg:col-span-3 lg:col-start-7">
-            <ul className="space-y-1">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a href={item.href} className="inline-flex min-h-10 items-center font-semibold hover:text-concrete">
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="col-span-6 sm:col-span-4 lg:col-span-3">
-            <a
-              href={STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-10 items-center gap-2 font-semibold hover:text-concrete"
-            >
-              Tienda online
-              <ExternalIcon className="size-3" />
-              <span className="sr-only">(se abre en una pestaña nueva)</span>
-            </a>
-            <p className="mt-1 break-all text-sm text-concrete">zephyrclothing.com.ar</p>
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex min-h-10 items-center gap-2 font-semibold hover:text-concrete"
-            >
-              Instagram
-              <ExternalIcon className="size-3" />
-              <span className="sr-only">(se abre en una pestaña nueva)</span>
-            </a>
-            <p className="mt-1 break-all text-sm text-concrete">{INSTAGRAM_HANDLE}</p>
-          </div>
+    <footer id="contacto" aria-labelledby="contacto-title">
+      <div className="mx-auto grid max-w-[1500px] gap-12 px-5 py-14 sm:px-8 md:grid-cols-3 lg:px-20">
+        <div>
+          <h2 id="contacto-title" className="text-lg font-medium uppercase">
+            Contáctanos
+          </h2>
+          <ul className="mt-2 space-y-1 text-lg">
+            <li>
+              <a href={WHATSAPP_URL} {...ext} className="text-[#2e8fd8] hover:underline">
+                {WHATSAPP_NUMBER}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${EMAIL}`} className="break-all text-[#2e8fd8] hover:underline">
+                {EMAIL}
+              </a>
+            </li>
+            <li>{ADDRESS}</li>
+          </ul>
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs leading-relaxed text-concrete sm:flex-row sm:justify-between">
-          <p className="max-w-[70ch]">
-            Rediseño académico no oficial de Zephyr Clothing. Las fotos y prendas son provisionales, con fines de
-            demostración; no son productos ni campañas de la marca.
-          </p>
-          <p>Diseño y desarrollo: Luciana Silvestre</p>
+        <nav aria-label="Pie de página">
+          <p className="text-2xl uppercase leading-tight text-ink">Navegá la tienda</p>
+          <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} className="inline-flex min-h-10 items-center hover:text-bordo">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href={STORE_URL} {...ext} className="inline-flex min-h-10 items-center font-semibold text-bordo hover:underline">
+                Comprar online
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="flex gap-3 md:justify-end">
+          <a
+            href={INSTAGRAM_URL}
+            {...ext}
+            className="inline-flex h-11 items-center rounded-md bg-[#e1306c] px-4 text-sm font-semibold text-white hover:opacity-90"
+          >
+            Instagram
+            <span className="sr-only"> (se abre en una pestaña nueva)</span>
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            {...ext}
+            className="inline-flex h-11 items-center rounded-md bg-[#25a244] px-4 text-sm font-semibold text-white hover:opacity-90"
+          >
+            WhatsApp
+            <span className="sr-only"> (se abre en una pestaña nueva)</span>
+          </a>
         </div>
+      </div>
+
+      <div className="on-dark bg-ink px-5 py-6 text-center text-xs leading-relaxed text-white sm:text-sm">
+        <p>Zephyr Clothing — Mendoza, Argentina.</p>
+        <p className="mt-1 text-white/70">
+          Rediseño académico no oficial. Las fotos y prendas son de demostración. Diseño y desarrollo: Luciana
+          Silvestre.
+        </p>
       </div>
     </footer>
   );

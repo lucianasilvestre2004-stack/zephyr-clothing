@@ -1,27 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { INSTAGRAM_URL, navItems, STORE_URL } from "@/content/site";
-import { ExternalIcon } from "./ui/ButtonLink";
+import { INSTAGRAM_URL, navItems, PROMO_TEXT, STORE_URL, WHATSAPP_URL } from "@/content/site";
+import { CartIcon, CloseIcon, MenuIcon, SearchIcon, UserIcon } from "./ui/Icons";
+
+const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Header sticky: agrega fondo y borde al bajar.
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    const id = requestAnimationFrame(onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(id);
-    };
-  }, []);
-
-  // Menú mobile: bloquea el scroll, atrapa el foco y cierra con Escape.
+  // Panel del menú: bloquea el scroll, atrapa el foco y cierra con Escape.
   useEffect(() => {
     if (!open) return;
     const panel = panelRef.current;
@@ -34,10 +24,10 @@ export function SiteHeader() {
         toggleRef.current?.focus();
         return;
       }
-      if (e.key !== "Tab" || !panel || !toggleRef.current) return;
-      const focusables = [toggleRef.current, ...Array.from(panel.querySelectorAll<HTMLElement>("a"))];
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
+      if (e.key !== "Tab" || !panel) return;
+      const items = Array.from(panel.querySelectorAll<HTMLElement>("a, button"));
+      const first = items[0];
+      const last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();
@@ -46,150 +36,131 @@ export function SiteHeader() {
         first.focus();
       }
     };
-
-    const desktop = window.matchMedia("(min-width: 1024px)");
-    const onResize = () => desktop.matches && setOpen(false);
-
     document.addEventListener("keydown", onKey);
-    desktop.addEventListener("change", onResize);
     return () => {
       document.body.style.overflow = "";
       document.removeEventListener("keydown", onKey);
-      desktop.removeEventListener("change", onResize);
     };
   }, [open]);
 
-  const dark = open;
-
   return (
-    <header
-      className={`sticky top-0 z-50 transition-colors duration-300 ${
-        dark
-          ? "on-dark bg-ink text-white"
-          : scrolled
-            ? "border-b border-ink/10 bg-paper/90 backdrop-blur-md"
-            : "bg-paper"
-      }`}
-    >
-      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 sm:px-8 lg:h-[4.5rem] lg:px-12">
-        <a
-          href="#inicio"
-          onClick={() => setOpen(false)}
-          className="type-display inline-flex min-h-11 items-center text-[1.9rem] leading-none"
-          aria-label="Zephyr Clothing, ir al inicio"
-        >
-          Zephyr
-        </a>
-
-        <nav aria-label="Principal" className="hidden lg:block">
-          <ul className="flex items-center gap-9">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="relative py-2 text-[0.95rem] font-semibold after:absolute after:inset-x-0 after:-bottom-0.5 after:h-[2px] after:origin-left after:scale-x-0 after:bg-bordo after:transition-transform after:duration-300 hover:after:scale-x-100"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden min-h-11 items-center px-3 text-sm font-bold hover:text-bordo lg:inline-flex"
-          >
-            Instagram
-            <span className="sr-only">(se abre en una pestaña nueva)</span>
-          </a>
-          <a
-            href={STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden min-h-11 items-center gap-2 bg-ink px-5 text-sm font-bold text-white transition-colors hover:bg-bordo sm:inline-flex"
-          >
-            Comprar
-            <ExternalIcon className="size-3" />
-            <span className="sr-only">(se abre en una pestaña nueva)</span>
-          </a>
-
-          <button
-            ref={toggleRef}
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-controls="menu-mobile"
-            className="relative -mr-2 grid size-12 place-items-center lg:hidden"
-          >
-            <span className="sr-only">{open ? "Cerrar menú" : "Abrir menú"}</span>
-            <span aria-hidden="true" className="relative block h-3.5 w-7">
-              <span
-                className={`absolute left-0 top-0 h-[2.5px] w-full bg-current transition-transform duration-300 ${
-                  open ? "translate-y-[5.5px] rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`absolute bottom-0 right-0 h-[2.5px] bg-current transition-all duration-300 ${
-                  open ? "w-full -translate-y-[5.5px] -rotate-45" : "w-4/6"
-                }`}
-              />
-            </span>
-          </button>
+    <>
+      {/* Barra de promociones: cinta que corre hacia la izquierda y se repite */}
+      <div className="promo-bar group overflow-hidden bg-ink py-2.5 text-white">
+        <p className="sr-only">{PROMO_TEXT}</p>
+        <div aria-hidden="true" className="promo-track flex w-max group-hover:[animation-play-state:paused]">
+          {[0, 1].map((half) => (
+            <div key={half} className="flex shrink-0">
+              {[0, 1, 2, 3].map((i) => (
+                <span key={i} className="whitespace-nowrap px-8 text-xs font-semibold uppercase tracking-wide md:text-sm">
+                  {PROMO_TEXT}
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
+        <p aria-hidden="true" className="promo-static hidden px-4 text-center text-xs font-semibold uppercase tracking-wide md:text-sm">
+          {PROMO_TEXT}
+        </p>
       </div>
 
-      {/* Menú mobile a pantalla completa */}
+      <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-20 max-w-[1500px] items-center justify-between px-5 sm:px-8 md:h-28 lg:px-20">
+          <a href="#inicio" aria-label="Zephyr, ir al inicio" className="flex items-start">
+            <span className="text-[2.6rem] font-extrabold leading-none tracking-[-0.03em] text-bordo sm:text-5xl md:text-[4.6rem]">
+              ZEPHYR
+            </span>
+            <span className="ml-1 mt-0.5 text-xs font-semibold text-bordo md:text-base">JS</span>
+          </a>
+
+          <nav aria-label="Accesos" className="flex items-center gap-1 sm:gap-3 md:gap-6">
+            <a href={STORE_URL} {...ext} className="hidden min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo lg:inline-flex">
+              <SearchIcon /> Buscar
+              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
+            </a>
+            <a href={STORE_URL} {...ext} className="hidden min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo lg:inline-flex">
+              <UserIcon /> Usuario
+              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
+            </a>
+            <a href={STORE_URL} {...ext} className="inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo">
+              <CartIcon />
+              <span className="hidden sm:inline">Carrito</span>
+              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
+            </a>
+            <button
+              ref={toggleRef}
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+              aria-controls="menu-principal"
+              className="inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo"
+            >
+              <MenuIcon />
+              <span className="hidden sm:inline">Menú</span>
+              <span className="sr-only sm:hidden">Abrir menú</span>
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Menú lateral con las anclas de la página */}
       <div
-        id="menu-mobile"
+        className={`fixed inset-0 z-50 bg-ink/50 transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+      <div
+        id="menu-principal"
         ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú"
         hidden={!open}
-        className="on-dark grain fixed inset-x-0 bottom-0 top-16 overflow-y-auto bg-ink text-white [--grain-opacity:0.18] lg:hidden"
+        className="fixed inset-y-0 right-0 z-50 flex w-[min(24rem,88vw)] flex-col bg-white p-6 shadow-xl sm:p-8"
       >
-        <nav aria-label="Menú mobile" className="flex min-h-full flex-col justify-between px-5 pb-10 pt-6 sm:px-8">
-          <ul className="space-y-1">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold uppercase tracking-wide">Menú</span>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              toggleRef.current?.focus();
+            }}
+            className="-mr-2 inline-flex size-11 items-center justify-center hover:text-bordo"
+          >
+            <CloseIcon />
+            <span className="sr-only">Cerrar menú</span>
+          </button>
+        </div>
+        <nav aria-label="Secciones" className="mt-8">
+          <ul className="divide-y divide-line border-y border-line">
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="type-display block py-2 text-[clamp(3.2rem,17vw,6rem)] transition-colors hover:text-concrete"
+                  className="flex min-h-14 items-center text-xl font-medium uppercase text-ink hover:text-bordo"
                 >
                   {item.label}
                 </a>
               </li>
             ))}
           </ul>
-          <div className="mt-10 space-y-5 border-t border-white/20 pt-6">
-            <a
-              href={STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-white px-6 font-bold text-ink"
-            >
-              Comprar online
-              <ExternalIcon />
-              <span className="sr-only">(se abre en una pestaña nueva)</span>
-            </a>
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 border-2 border-white px-6 font-bold text-white"
-            >
-              Seguinos en Instagram
-              <ExternalIcon />
-              <span className="sr-only">(se abre en una pestaña nueva)</span>
-            </a>
-            <p className="text-sm text-concrete">Ropa urbana de mujer desde Mendoza, Argentina.</p>
-          </div>
         </nav>
+        <div className="mt-auto grid gap-3 pt-8">
+          <a href={STORE_URL} {...ext} className="inline-flex min-h-12 items-center justify-center rounded-full bg-bordo px-6 font-semibold text-white hover:bg-bordo-deep">
+            Comprar online
+          </a>
+          <div className="grid grid-cols-2 gap-3">
+            <a href={INSTAGRAM_URL} {...ext} className="inline-flex min-h-12 items-center justify-center rounded-full border border-ink/20 font-semibold text-ink hover:border-ink">
+              Instagram
+            </a>
+            <a href={WHATSAPP_URL} {...ext} className="inline-flex min-h-12 items-center justify-center rounded-full border border-ink/20 font-semibold text-ink hover:border-ink">
+              WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 }

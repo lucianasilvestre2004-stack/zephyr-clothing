@@ -13,6 +13,10 @@ export type Product = {
   category: string;
   note: string;
   image: Photo;
+  /** Precio en pesos argentinos (referencia). */
+  price?: number;
+  /** Talles disponibles. */
+  sizes?: string[];
   href: string;
   /** ids de otras prendas con las que se arma el outfit */
   pairsWith: string[];
@@ -25,6 +29,8 @@ export const products: Product[] = [
     category: "Camperas",
     note: "Abrigada y corta, con capucha. El color que levanta cualquier outfit.",
     image: images.fitPuffer,
+    price: 70000,
+    sizes: ["S", "M", "L"],
     href: STORE_URL,
     pairsWith: ["jean-wide", "buzo-gris"],
   },
@@ -34,6 +40,8 @@ export const products: Product[] = [
     category: "Denim",
     note: "Pierna ancha y tiro medio. La base de todos los días.",
     image: images.fitJeanWide,
+    price: 50000,
+    sizes: ["34", "36", "38", "40", "42"],
     href: STORE_URL,
     pairsWith: ["sweater-verde", "puffer-bordo"],
   },
@@ -52,6 +60,8 @@ export const products: Product[] = [
     category: "Polleras",
     note: "Gabardina con bolsillos y cordón. Va con borcegos o zapatillas.",
     image: images.fitPollera,
+    price: 45000,
+    sizes: ["36", "38", "40"],
     href: STORE_URL,
     pairsWith: ["buzo-gris", "puffer-bordo"],
   },
@@ -70,6 +80,8 @@ export const products: Product[] = [
     category: "Polleras",
     note: "Tablas y ruedo desflecado. Con medias negras para el invierno.",
     image: images.fitMini,
+    price: 35000,
+    sizes: ["34", "36", "38"],
     href: STORE_URL,
     pairsWith: ["sweater-verde", "puffer-bordo"],
   },

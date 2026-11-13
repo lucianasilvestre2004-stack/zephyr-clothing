@@ -32,6 +32,18 @@ export const images = {
     focus: "50% 40%",
   },
 
+  // PORTADA (fotos elegidas por Luciana)
+  portada1: { src: "/images/portada-1.webp", alt: "Chica sonriendo agachada, con campera de jean oversize, corbata a rayas y zapatos rojos", focus: "50% 30%" },
+  portada2: { src: "/images/portada-2.webp", alt: "Chica en blanco y negro sentada sobre una caja, con remera blanca y jean claro", focus: "50% 40%" },
+  portada3: { src: "/images/portada-3.webp", alt: "Chica sentada en el piso con campera y jean de denim azul", focus: "60% 35%" },
+
+  // NEW DROPS (fotos elegidas por Luciana)
+  dropsGrande: { src: "/images/drops-grande.webp", alt: "Chica en la calle con tapado largo marrón, sweater gris, jean blanco y gorra", focus: "50% 12%" },
+  drops1: { src: "/images/drops-1.webp", alt: "Chica sonriendo en una esquina, con remera blanca corta, camisa a cuadros atada y pantalón negro ancho", focus: "50% 40%" },
+  drops2: { src: "/images/drops-2.webp", alt: "Chica con campera de cuero negra, camisa a cuadros atada y jean oscuro ancho frente a una reja", focus: "50% 40%" },
+  drops3: { src: "/images/drops-3.webp", alt: "Chica caminando con blazer camel, musculosa blanca, jean claro ancho y gorra", focus: "50% 35%" },
+  drops4: { src: "/images/drops-4.webp", alt: "Chica cruzando la calle con campera negra, mini pollera beige y botas altas negras", focus: "50% 35%" },
+
   // GET THE FIT
   fitPuffer: { src: "/images/fit-puffer-bordo.webp", alt: "Campera puffer bordó con capucha", focus: "50% 25%" },
   fitJeanWide: { src: "/images/fit-jean-wide.webp", alt: "Jean wide leg azul con top blanco", focus: "50% 55%" },
@@ -70,6 +82,13 @@ export const images = {
     src: "/images/look-espalda.webp",
     alt: "Chica de espaldas con sweater corto verde y jean negro ancho",
     focus: "50% 40%",
+  },
+
+  // BENEFICIOS (banner con foto de fondo)
+  benefits: {
+    src: "/images/hero-secundaria.webp",
+    alt: "",
+    focus: "50% 80%",
   },
 
   // NOSOTROS
