@@ -34,8 +34,13 @@ export type ZondaMission = {
   tip: string;
   /** Prendas que sirven para el clima de la misión. */
   correct: string[];
+  /** Temperatura grande para la tarjeta de clima. */
+  temp: string;
   /** Colores del tablero según el clima. */
   sky: string;
+  sun: string;
+  mountainFar: string;
+  mountainNear: string;
 };
 
 export const zondaMissions: ZondaMission[] = [
@@ -45,7 +50,11 @@ export const zondaMissions: ZondaMission[] = [
     forecast: "31° · viento caliente y seco",
     tip: "Prendas livianas y algo para el sol. Nada de abrigo.",
     correct: ["pollera", "mini", "anteojos", "gorra", "ojotas"],
-    sky: "from-[#e8c9a0] via-[#dcae7d] to-[#c98f5c]",
+    temp: "31°",
+    sky: "from-[#f3d9b1] via-[#e6b47e] to-[#c9824f]",
+    sun: "#fff1c9",
+    mountainFar: "#b9765a",
+    mountainNear: "#7d4433",
   },
   {
     id: "helada",
@@ -53,7 +62,11 @@ export const zondaMissions: ZondaMission[] = [
     forecast: "3° · cielo despejado y frío seco",
     tip: "Abrigo y capas. Lo de verano queda en el placard.",
     correct: ["puffer", "sweater", "jean", "bufanda", "guantes", "botas"],
-    sky: "from-[#cfd9e3] via-[#b7c6d4] to-[#9eb1c3]",
+    temp: "3°",
+    sky: "from-[#e6eef5] via-[#c3d3e2] to-[#9fb4c9]",
+    sun: "#ffffff",
+    mountainFar: "#8fa3b8",
+    mountainNear: "#4f6377",
   },
   {
     id: "amplitud",
@@ -61,7 +74,11 @@ export const zondaMissions: ZondaMission[] = [
     forecast: "8° a la mañana · 25° a la tarde",
     tip: "Capas que se sacan fácil: base liviana y algo para el frío de la mañana.",
     correct: ["buzo", "jean", "sweater", "gorra", "anteojos"],
-    sky: "from-[#dfe4ea] via-[#e9d9c3] to-[#d9b892]",
+    temp: "8° → 25°",
+    sky: "from-[#dbe5ee] via-[#efdcc2] to-[#dcae7f]",
+    sun: "#fff6dc",
+    mountainFar: "#a58a7c",
+    mountainNear: "#5e4a45",
   },
 ];
 
