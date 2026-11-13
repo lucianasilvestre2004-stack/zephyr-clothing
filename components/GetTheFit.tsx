@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { products, type Product } from "@/content/products";
 import { Photo } from "./ui/Photo";
 import { useZondaCode, withDiscount } from "@/lib/zonda";
+import { addToCart, requestOpenCart } from "@/lib/store";
 
 const byId = (id: string) => products.find((p) => p.id === id);
 
@@ -32,6 +33,13 @@ function Price({ price, big = false }: { price: number; big?: boolean }) {
 export function GetTheFit() {
   const [openId, setOpenId] = useState<string | null>(null);
   const opened = openId ? byId(openId) : undefined;
+
+  // El buscador del header puede pedir abrir una prenda.
+  useEffect(() => {
+    const onOpen = (e: Event) => setOpenId((e as CustomEvent<string>).detail);
+    window.addEventListener("zephyr:open-product", onOpen);
+    return () => window.removeEventListener("zephyr:open-product", onOpen);
+  }, []);
 
   return (
     <section id="get-the-fit" aria-labelledby="fit-title" className="py-16 sm:py-24">
@@ -121,6 +129,17 @@ function ProductDetail({
   onSelect: (id: string) => void;
 }) {
   const [size, setSize] = useState<string | null>(null);
+  const [needSize, setNeedSize] = useState(false);
+
+  const onAdd = () => {
+    if (product.sizes && !size) {
+      setNeedSize(true);
+      return;
+    }
+    addToCart(product.id, size ?? "Único");
+    onClose();
+    requestOpenCart();
+  };
 
   return (
     <>
@@ -163,7 +182,10 @@ function ProductDetail({
                         name={`talle-${product.id}`}
                         value={s}
                         checked={size === s}
-                        onChange={() => setSize(s)}
+                        onChange={() => {
+                          setSize(s);
+                          setNeedSize(false);
+                        }}
                         className="peer sr-only"
                       />
                       <span className="inline-flex size-12 items-center justify-center rounded-lg border border-line text-sm font-semibold text-ink transition-colors hover:border-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo">
@@ -172,8 +194,8 @@ function ProductDetail({
                     </label>
                   ))}
                 </div>
-                <p className="mt-2 text-sm" aria-live="polite">
-                  {size ? `Elegiste talle ${size}.` : "Elegí tu talle."}
+                <p className={`mt-2 text-sm ${needSize ? "font-semibold text-bordo" : ""}`} aria-live="polite">
+                  {size ? `Elegiste talle ${size}.` : needSize ? "Elegí un talle para agregarla al carrito." : "Elegí tu talle."}
                 </p>
               </fieldset>
             )}
@@ -201,18 +223,13 @@ function ProductDetail({
             </ul>
 
             <div className="grow" />
-            <a
-              href={product.href}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={onAdd}
               className="mt-10 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-bordo px-6 font-semibold uppercase tracking-wide text-white transition-colors hover:bg-bordo-deep"
             >
-              Comprar
-              <span className="sr-only"> {product.name} (se abre en una pestaña nueva)</span>
-            </a>
-            <p className="mt-3 text-center text-sm">
-              {size ? `Te llevamos a la tienda online para terminar tu compra en talle ${size}.` : "Terminás tu compra en la tienda online."}
-            </p>
+              Agregar al carrito
+            </button>
           </div>
         </div>
       )}

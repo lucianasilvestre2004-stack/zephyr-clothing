@@ -3,11 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import { INSTAGRAM_URL, navItems, PROMO_TEXT, STORE_URL, WHATSAPP_URL } from "@/content/site";
 import { CartIcon, CloseIcon, MenuIcon, SearchIcon, UserIcon } from "./ui/Icons";
+import { CartPanel, SearchPanel, UserPanel } from "./StorePanels";
+import { useCart, useUser } from "@/lib/store";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
+type Panel = "buscar" | "usuario" | "carrito" | null;
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [panel, setPanel] = useState<Panel>(null);
+  const cart = useCart();
+  const user = useUser();
+  const items = cart.reduce((n, l) => n + l.qty, 0);
+
+  // Otras secciones pueden pedir abrir el carrito (al agregar una prenda).
+  useEffect(() => {
+    const openCart = () => setPanel("carrito");
+    window.addEventListener("zephyr:open-cart", openCart);
+    return () => window.removeEventListener("zephyr:open-cart", openCart);
+  }, []);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -74,19 +89,26 @@ export function SiteHeader() {
           </a>
 
           <nav aria-label="Accesos" className="flex items-center gap-1 sm:gap-3 md:gap-6">
-            <a href={STORE_URL} {...ext} className="hidden min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo lg:inline-flex">
-              <SearchIcon /> Buscar
-              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
-            </a>
-            <a href={STORE_URL} {...ext} className="hidden min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo lg:inline-flex">
-              <UserIcon /> Usuario
-              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
-            </a>
-            <a href={STORE_URL} {...ext} className="inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo">
+            <button type="button" onClick={() => setPanel("buscar")} className="inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo">
+              <SearchIcon />
+              <span className="hidden lg:inline">Buscar</span>
+              <span className="sr-only lg:hidden">Buscar</span>
+            </button>
+            <button type="button" onClick={() => setPanel("usuario")} className="inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo">
+              <UserIcon />
+              <span className="hidden lg:inline">{user ? `Hola, ${user.nombre}` : "Usuario"}</span>
+              <span className="sr-only lg:hidden">{user ? `Mi cuenta, ${user.nombre}` : "Usuario"}</span>
+            </button>
+            <button type="button" onClick={() => setPanel("carrito")} className="relative inline-flex min-h-11 items-center gap-2 px-2 text-lg font-medium hover:text-bordo">
               <CartIcon />
               <span className="hidden sm:inline">Carrito</span>
-              <span className="sr-only">(en la tienda online, pestaña nueva)</span>
-            </a>
+              <span className="sr-only">{items ? `, ${items} prenda${items > 1 ? "s" : ""}` : ", vacío"}</span>
+              {items > 0 && (
+                <span aria-hidden="true" className="absolute -top-0.5 left-5 grid min-w-5 place-items-center rounded-full bg-bordo px-1 text-[0.7rem] font-semibold leading-5 text-white">
+                  {items}
+                </span>
+              )}
+            </button>
             <button
               ref={toggleRef}
               type="button"
@@ -102,6 +124,10 @@ export function SiteHeader() {
           </nav>
         </div>
       </header>
+
+      <SearchPanel open={panel === "buscar"} onClose={() => setPanel(null)} />
+      <UserPanel open={panel === "usuario"} onClose={() => setPanel(null)} />
+      <CartPanel open={panel === "carrito"} onClose={() => setPanel(null)} />
 
       {/* Menú lateral con las anclas de la página */}
       <div
