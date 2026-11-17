@@ -195,13 +195,11 @@
   }
 }
 
-/* Con movimiento reducido, la barra queda fija y centrada. */
+/* La cinta corre siempre (también con "reducir animaciones"), pero más lenta en ese caso. */
 @media (prefers-reduced-motion: reduce) {
   .promo-track {
-    display: none;
-  }
-  .promo-static {
-    display: block;
+    animation-duration: 70s !important;
+    animation-iteration-count: infinite !important;
   }
 }
 

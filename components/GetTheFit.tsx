@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { products, type Product } from "@/content/products";
+import { allProducts, type Product } from "@/content/products";
 import { Photo } from "./ui/Photo";
 import { useZondaCode, withDiscount } from "@/lib/zonda";
 import { addToCart, requestOpenCart } from "@/lib/store";
 
-const byId = (id: string) => products.find((p) => p.id === id);
+const byId = (id: string) => allProducts.find((p) => p.id === id);
 
 const formatPrice = (n: number) => `$ ${n.toLocaleString("es-AR")}`;
 
@@ -16,7 +16,7 @@ const featured = ["puffer-bordo", "jean-wide", "pollera-cargo", "mini-negra"]
   .filter((p): p is Product => Boolean(p));
 
 /** Precio con el 10% del juego Zonda tachando el original cuando está activo. */
-function Price({ price, big = false }: { price: number; big?: boolean }) {
+export function Price({ price, big = false }: { price: number; big?: boolean }) {
   const code = useZondaCode();
   if (!code) return <>{formatPrice(price)}</>;
   return (

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { products } from "@/content/products";
+import { allProducts } from "@/content/products";
 import { clearCart, logout, requestOpenProduct, saveUser, setQty, useCart, useUser } from "@/lib/store";
 import { useZondaCode, withDiscount } from "@/lib/zonda";
 import { Drawer } from "./ui/Drawer";
 import { Photo } from "./ui/Photo";
 
 const formatPrice = (n: number) => `$ ${n.toLocaleString("es-AR")}`;
-const shoppable = products.filter((p) => p.price && p.sizes);
-const byId = (id: string) => products.find((p) => p.id === id);
+const shoppable = allProducts.filter((p) => p.price && p.sizes);
+const byId = (id: string) => allProducts.find((p) => p.id === id);
 
 /** Quita tildes y pasa a minúsculas para que "bordo" encuentre "bordó". */
 const normalize = (s: string) =>
@@ -37,13 +37,13 @@ export function SearchPanel({ open, onClose }: { open: boolean; onClose: () => v
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscá una prenda: jean, campera, pollera…"
+          placeholder="Buscá una prenda: jean, campera, tapado, blazer…"
           className="w-full border-b-2 border-ink bg-transparent py-3 text-xl text-ink outline-none placeholder:text-gray-text/60 focus-visible:outline-none"
         />
         <p className="mt-4 text-sm" aria-live="polite">
-          {q ? (results.length ? `${results.length} resultado${results.length > 1 ? "s" : ""}` : `No encontramos "${query}". Probá con jean, campera, pollera o mini.`) : "Prendas destacadas"}
+          {q ? (results.length ? `${results.length} resultado${results.length > 1 ? "s" : ""}` : `No encontramos "${query}". Probá con jean, campera, tapado o blazer.`) : "Prendas destacadas"}
         </p>
-        <ul className="mt-4 grid grid-cols-2 gap-4 pb-2 sm:grid-cols-4">
+        <ul className="mt-4 grid max-h-[60vh] grid-cols-2 gap-4 overflow-y-auto pb-2 sm:grid-cols-4">
           {results.map((p) => (
             <li key={p.id}>
               <button

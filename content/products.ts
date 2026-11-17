@@ -86,3 +86,68 @@ export const products: Product[] = [
     pairsWith: ["sweater-verde", "puffer-bordo"],
   },
 ];
+
+/**
+ * PRENDAS DE NEW DROPS (misma dinámica que Get the fit: se tocan, se ven en detalle y van al carrito).
+ * `drop` indica qué foto del collage corresponde a cada prenda.
+ */
+export const dropProducts: Product[] = [
+  {
+    id: "remera-baby-tee",
+    name: "Remera baby tee blanca",
+    category: "Remeras",
+    note: "Corta, al cuerpo y de algodón con lycra. La base de cualquier look de calle.",
+    image: images.drops1,
+    price: 22000,
+    sizes: ["S", "M", "L"],
+    href: STORE_URL,
+    pairsWith: ["jean-wide", "campera-cuero-negra"],
+  },
+  {
+    id: "campera-cuero-negra",
+    name: "Campera de cuero negra",
+    category: "Camperas",
+    note: "Ecocuero con cuello alto y puños elastizados. Oversize para usar con jeans anchos.",
+    image: images.drops2,
+    price: 85000,
+    sizes: ["S", "M", "L"],
+    href: STORE_URL,
+    pairsWith: ["remera-baby-tee", "jean-wide"],
+  },
+  {
+    id: "blazer-camel",
+    name: "Blazer oversize camel",
+    category: "Sacos",
+    note: "Paño suave, hombros marcados y largo a la cadera. Suma estilo a una remera y un jean.",
+    image: images.drops3,
+    price: 78000,
+    sizes: ["S", "M", "L"],
+    href: STORE_URL,
+    pairsWith: ["remera-baby-tee", "jean-wide"],
+  },
+  {
+    id: "mini-gabardina",
+    name: "Mini de gabardina beige",
+    category: "Polleras",
+    note: "Tiro medio con cinto y bolsillos. Ideal con botas altas y una campera corta.",
+    image: images.drops4,
+    price: 38000,
+    sizes: ["34", "36", "38", "40"],
+    href: STORE_URL,
+    pairsWith: ["campera-cuero-negra", "tapado-marron"],
+  },
+  {
+    id: "tapado-marron",
+    name: "Tapado largo marrón",
+    category: "Abrigos",
+    note: "Largo al tobillo y de solapas anchas. El abrigo que transforma cualquier outfit en invierno.",
+    image: images.dropsGrande,
+    price: 120000,
+    sizes: ["S", "M", "L"],
+    href: STORE_URL,
+    pairsWith: ["remera-baby-tee", "mini-gabardina"],
+  },
+];
+
+/** Todas las prendas de la tienda (para el buscador, el carrito y la vista de producto). */
+export const allProducts: Product[] = [...products, ...dropProducts];
